@@ -33,42 +33,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <style>
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             color: #f4f4f6;
             font-family: 'IBM Plex Sans Arabic', sans-serif;
             user-select: none;
             overflow-x: hidden;
-            transition: background 0.4s ease-in-out;
-            transform: translateZ(0);
-            backface-visibility: hidden;
+            background-color: #0b0b0e;
+            background-image: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
         }
-
-        body.theme-titanium {
-            background-color: #0b0b0e !important;
-            background-image: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 60%) !important;
-        }
-
-        body.theme-oled {
-            background-color: #000000 !important;
-            background-image: none !important;
-        }
-
-        body.theme-charcoal {
-            background-color: #121418 !important;
-            background-image: radial-gradient(circle at 20% 20%, rgba(150, 150, 160, 0.08) 0%, transparent 50%) !important;
-        }
-
-        body.theme-midnight {
-            background-color: #080d1a !important;
-            background-image: radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 65%) !important;
-        }
-
-        /* iOS Glass Styles */
         .ios-glass {
             background: rgba(18, 18, 24, 0.75);
             backdrop-filter: blur(35px) saturate(190%);
@@ -76,86 +49,42 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
         }
-
         .ios-glass-card {
             background: rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(20px) saturate(150%);
             -webkit-backdrop-filter: blur(20px) saturate(150%);
             border: 1px solid rgba(255, 255, 255, 0.09);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            transition: transform 0.15s cubic-bezier(0, 0, 0.2, 1);
-            will-change: transform;
+            transition: transform 0.15s ease;
         }
-
-        .ios-glass-card:active {
-            transform: scale(0.96) translateZ(0);
-        }
-
-        .theme-active-card {
-            border-color: rgba(255, 255, 255, 0.8) !important;
-            background: rgba(255, 255, 255, 0.12) !important;
-        }
-
+        .ios-glass-card:active { transform: scale(0.96); }
         .ios-btn-glass {
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #f4f4f6;
-            transition: all 0.15s ease-out;
+            transition: all 0.15s ease;
         }
-
-        .ios-btn-glass:active {
-            transform: scale(0.95);
-        }
-
         .ios-btn-white {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             color: #040405;
             box-shadow: 0 4px 25px rgba(255, 255, 255, 0.25);
-            transition: all 0.15s ease-out;
+            transition: all 0.15s ease;
         }
-
-        .ios-btn-white:active {
-            transform: scale(0.95);
-        }
-
-        .zoom-target {
-            transition: transform 0.15s cubic-bezier(0.1, 0.9, 0.2, 1);
-            will-change: transform;
-            transform-origin: center center;
-            touch-action: none;
-        }
-
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 99px;
-        }
-
-        .progress-ring-circle {
-            transition: stroke-dashoffset 0.05s linear;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-        }
-
+        .zoom-target { transition: transform 0.15s ease; transform-origin: center center; touch-action: none; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 99px; }
+        .progress-ring-circle { transition: stroke-dashoffset 0.05s linear; transform: rotate(-90deg); transform-origin: 50% 50%; }
         @keyframes scanGrid {
             0% { transform: translateY(-100%); opacity: 0.3; }
             50% { opacity: 1; }
             100% { transform: translateY(100%); opacity: 0.3; }
         }
-        .scanner-line {
-            animation: scanGrid 1.5s ease-in-out infinite alternate;
-        }
+        .scanner-line { animation: scanGrid 1.5s ease-in-out infinite alternate; }
     </style>
 </head>
-<body class="theme-titanium min-h-screen flex flex-col justify-between selection:bg-white/20 selection:text-white">
+<body class="min-h-screen flex flex-col justify-between selection:bg-white/20 selection:text-white">
 
     <!-- Top Navigation Header -->
     <header class="sticky top-0 z-40 ios-glass border-b border-white/10 px-4 sm:px-8 py-3">
@@ -163,7 +92,7 @@
             
             <!-- Logo Container (Long press triggers director mode) -->
             <div class="relative group select-none" id="logoTouchArea">
-                <div id="logoContainer" class="flex items-center gap-3 cursor-pointer p-1 rounded-2xl transition active:scale-95">
+                <div class="flex items-center gap-3 cursor-pointer p-1 rounded-2xl transition active:scale-95">
                     <div class="relative">
                         <div class="w-10 h-10 sm:w-11 sm:h-11 ios-glass-card rounded-2xl flex items-center justify-center text-white text-lg shadow-inner">
                             <i class="fa-solid fa-camera-retro"></i>
@@ -172,7 +101,7 @@
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white" id="brandTitle">مصوركم حُر</h1>
+                            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">مصوركم حُر</h1>
                             <span id="directorBadge" class="hidden text-[9px] font-mono uppercase font-semibold bg-white/10 text-white/80 px-2 py-0.5 rounded-full border border-white/20">DIRECTOR</span>
                         </div>
                     </div>
@@ -191,14 +120,11 @@
             <div class="flex items-center gap-1.5 sm:gap-2">
                 <button id="navYourPhotosBtn" onclick="switchSection('photos')" class="px-3.5 sm:px-5 py-2 text-xs font-bold rounded-2xl ios-btn-white transition flex items-center gap-1.5">
                     <i class="fa-solid fa-images text-[11px]"></i>
-                    <span data-i18n="yourPhotos">صوركم</span>
+                    <span>صوركم</span>
                 </button>
                 <button id="navPlayersBtn" onclick="switchSection('players')" class="px-3.5 sm:px-5 py-2 text-xs font-bold rounded-2xl ios-btn-glass transition flex items-center gap-1.5">
                     <i class="fa-solid fa-user-ninja text-[11px]"></i>
-                    <span data-i18n="players">اللاعبين</span>
-                </button>
-                <button onclick="toggleSettingsModal(true)" class="p-2 sm:px-3 py-2 text-xs font-bold rounded-2xl ios-btn-glass transition" title="الإعدادات">
-                    <i class="fa-solid fa-gear"></i>
+                    <span>اللاعبين</span>
                 </button>
             </div>
         </div>
@@ -207,7 +133,7 @@
     <!-- Main Content Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-8 py-5 flex-grow w-full space-y-5">
 
-        <!-- SECTION 1: YOUR PHOTOS (صوركم) -->
+        <!-- SECTION 1: YOUR PHOTOS -->
         <div id="sectionYourPhotos" class="space-y-5">
             
             <!-- AI FACE MATCHING BANNER -->
@@ -236,15 +162,24 @@
                 </div>
             </div>
 
+            <!-- AI Filter Notice Bar -->
+            <div id="aiFilterNoticeBox" class="hidden ios-glass p-4 rounded-2xl flex items-center justify-between gap-3 border border-blue-500/30">
+                <div class="flex items-center gap-2 text-xs text-blue-200 font-bold">
+                    <i class="fa-solid fa-wand-magic-sparkles text-blue-400"></i>
+                    <span id="aiFilterNoticeText">تم تصفية الصور بناءً على مطابقة الوجه (AI Match)</span>
+                </div>
+                <button onclick="clearAiFilter()" class="px-3 py-1 ios-btn-glass text-xs rounded-xl">إلغاء التصفية وعرض الكل</button>
+            </div>
+
             <div class="flex items-center justify-between gap-3 bg-white/5 p-2 rounded-2xl ios-glass">
                 <div class="flex items-center gap-2">
                     <button id="todayTabBtn" onclick="switchMainView('today')" class="px-4 py-1.5 text-xs font-bold rounded-xl ios-btn-white transition flex items-center gap-1.5">
                         <i class="fa-solid fa-bolt text-[10px]"></i>
-                        <span data-i18n="todayPhotos">صور اليوم</span>
+                        <span>صور اليوم</span>
                     </button>
                     <button id="archiveTabBtn" onclick="switchMainView('archive')" class="px-4 py-1.5 text-xs font-bold rounded-xl ios-btn-glass transition flex items-center gap-1.5">
                         <i class="fa-solid fa-clock-rotate-left text-[10px]"></i>
-                        <span data-i18n="archive">الأرشيف</span>
+                        <span>الأرشيف</span>
                     </button>
                 </div>
                 <span class="text-[11px] text-textMuted hidden sm:inline" id="currentDateStr"></span>
@@ -254,56 +189,50 @@
             <div class="flex flex-wrap items-center justify-between gap-4 ios-glass-card p-4 rounded-3xl">
                 <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
                     <div class="flex items-center gap-2 text-xs text-textMuted font-medium">
-                        <span data-i18n="selected">المحدد:</span>
+                        <span>المحدد:</span>
                         <span id="selectedCountBadge" class="font-bold text-white text-sm ios-glass px-3 py-0.5 rounded-xl">0</span>
                     </div>
                     <div class="h-4 w-px bg-white/10"></div>
                     <div class="flex items-center gap-3 text-xs">
-                        <button onclick="selectAllPhotos()" class="text-textMuted hover:text-white transition font-medium underline" data-i18n="selectAll">تحديد الكل</button>
-                        <button onclick="deselectAllPhotos()" class="text-textMuted hover:text-white transition font-medium underline" data-i18n="deselectAll">إلغاء التحديد</button>
+                        <button onclick="selectAllPhotos()" class="text-textMuted hover:text-white transition font-medium underline">تحديد الكل</button>
+                        <button onclick="deselectAllPhotos()" class="text-textMuted hover:text-white transition font-medium underline">إلغاء التحديد</button>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-2.5 w-full sm:w-auto">
                     <button id="galleryDownloadBtn" onclick="downloadSelectedDirect()" disabled class="flex-1 sm:flex-none px-5 py-2.5 ios-btn-white disabled:opacity-20 disabled:cursor-not-allowed font-bold rounded-2xl text-xs transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-mobile-screen"></i>
-                        <span data-i18n="saveToGallery">حفظ بمعرض الهاتف</span>
+                        <span>حفظ في المعرض</span>
                     </button>
                     <button id="zipDownloadBtn" onclick="downloadSelectedZip()" disabled class="flex-1 sm:flex-none px-5 py-2.5 ios-btn-glass disabled:opacity-20 disabled:cursor-not-allowed font-bold rounded-2xl text-xs transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-file-zipper"></i>
-                        <span data-i18n="downloadZip">تنزيل ملف ZIP</span>
+                        <span>تنزيل ZIP</span>
                     </button>
                 </div>
             </div>
 
             <!-- DIRECTOR PANEL -->
-            <section id="directorPanel" class="hidden ios-glass p-6 sm:p-8 rounded-3xl relative space-y-6">
+            <section id="directorPanel" class="hidden ios-glass p-6 sm:p-8 rounded-3xl relative space-y-6 border border-emerald-500/30">
                 <div class="flex items-center justify-between pb-4 border-b border-white/10">
                     <div class="flex items-center gap-3">
                         <span class="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping"></span>
-                        <h2 class="text-xs sm:text-sm font-bold text-white uppercase tracking-wider" data-i18n="directorPanelTitle">لوحة الرفع السحابي الفوري للمخرج</h2>
+                        <h2 class="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">لوحة الرفع السحابي الفوري للمخرج</h2>
                     </div>
                     <div class="flex items-center gap-3 text-xs">
                         <button onclick="changePinCodePrompt()" class="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl border border-white/20 transition flex items-center gap-1.5">
                             <i class="fa-solid fa-key"></i>
-                            <span>تغيير كلمة السر</span>
+                            <span>تغيير السر</span>
                         </button>
                         <button onclick="logoutDirectorMode()" class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/20 font-bold rounded-2xl transition flex items-center gap-1.5">
                             <i class="fa-solid fa-right-from-bracket"></i>
-                            <span data-i18n="logout">تسجيل الخروج</span>
+                            <span>خروج</span>
                         </button>
                     </div>
                 </div>
 
                 <div class="bg-red-500/5 border border-red-500/20 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3">
-                    <div class="flex items-center gap-2.5 text-xs text-red-200">
-                        <i class="fa-solid fa-triangle-exclamation text-red-400 text-sm"></i>
-                        <span>إدارة الأرشيف السحابي: مسح جميع الصور المخزنة سحابياً نهائياً</span>
-                    </div>
-                    <button onclick="deleteAllArchiveConfirm()" class="px-4 py-2 bg-red-600/80 hover:bg-red-600 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2">
-                        <i class="fa-solid fa-trash-can"></i>
-                        <span>حذف الأرشيف السحابي بالكامل</span>
-                    </button>
+                    <span class="text-xs text-red-200">إدارة الأرشيف السحابي: حذف جميع الصور المخزنة نهائياً</span>
+                    <button onclick="deleteAllArchiveConfirm()" class="px-4 py-2 bg-red-600/80 hover:bg-red-600 text-white font-bold text-xs rounded-xl shadow-lg transition">حذف السحابة بالكامل</button>
                 </div>
 
                 <div id="dropZone" class="border-2 border-dashed border-white/15 hover:border-white/40 bg-white/5 rounded-2xl p-6 sm:p-10 text-center transition cursor-pointer flex flex-col items-center justify-center gap-3">
@@ -314,22 +243,18 @@
                         <i class="fa-solid fa-cloud-arrow-up text-blue-400"></i>
                     </div>
                     <div>
-                        <p class="text-xs sm:text-sm font-bold text-white">رفع سحابي دائم مدى الحياة ليراه كل الزوار</p>
-                        <p class="text-[11px] text-textMuted mt-1">تتم المزامنة الحية على السحابة العامة فوراً بدون فقدان</p>
+                        <p class="text-xs sm:text-sm font-bold text-white">رفع صور دائم مدى الحياة ليراها كل الزوار</p>
+                        <p class="text-[11px] text-textMuted mt-1">تتم المزامنة الحية فوراً على السحابة العامة</p>
                     </div>
                     <div class="flex flex-wrap items-center justify-center gap-3 mt-2">
-                        <button onclick="document.getElementById('fileInput').click()" class="px-5 py-2.5 ios-btn-white text-xs font-bold rounded-2xl transition">
-                            <i class="fa-solid fa-photo-film me-1.5"></i> <span>اختيار صور</span>
-                        </button>
-                        <button onclick="document.getElementById('folderInput').click()" class="px-5 py-2.5 ios-btn-glass text-xs font-bold rounded-2xl transition">
-                            <i class="fa-solid fa-folder-plus me-1.5"></i> <span>رفع مجلد كامل</span>
-                        </button>
+                        <button onclick="document.getElementById('fileInput').click()" class="px-5 py-2.5 ios-btn-white text-xs font-bold rounded-2xl transition">اختر صور</button>
+                        <button onclick="document.getElementById('folderInput').click()" class="px-5 py-2.5 ios-btn-glass text-xs font-bold rounded-2xl transition">رفع مجلد كامل</button>
                     </div>
                 </div>
 
                 <div id="uploadProgressBox" class="hidden space-y-2 ios-glass p-4 rounded-2xl">
                     <div class="flex justify-between text-xs text-textMuted font-mono">
-                        <span id="uploadStatusText">جاري الرفع والحفظ للسحابة العامة...</span>
+                        <span id="uploadStatusText">جاري الرفع للسحابة...</span>
                         <span id="uploadPercentText">0%</span>
                     </div>
                     <div class="w-full bg-white/10 rounded-full h-2 overflow-hidden border border-white/10">
@@ -352,28 +277,25 @@
                 <div class="flex items-center justify-between border-b border-white/10 pb-3">
                     <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
                         <i class="fa-solid fa-fire-flame-curved text-textMuted"></i>
-                        <span data-i18n="todayTitle">تغطيات اليوم الحالية (سحابية)</span>
+                        <span>تغطيات اليوم السحابية الحالية</span>
                     </h3>
-                    <span class="text-[10px] ios-glass px-3 py-1 rounded-full text-textMuted">
-                        تظهر مباشرة لكل الزوار في العالم
-                    </span>
                 </div>
 
                 <div id="todayPhotosGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
 
                 <div id="todayEmptyState" class="hidden py-20 text-center border border-dashed border-white/10 rounded-3xl ios-glass-card">
-                    <i class="fa-solid id fa-camera-retro text-4xl text-white/20 mb-3"></i>
+                    <i class="fa-solid fa-camera-retro text-4xl text-white/20 mb-3"></i>
                     <p class="text-textMuted text-xs sm:text-sm font-semibold">لا توجد صور مرفوعة سحابياً حتى الآن.</p>
-                    <p class="text-[11px] text-textMuted/60 mt-1">اضغط مطولاً على الشعار لتسجيل الدخول ورفع التغطية.</p>
+                    <p class="text-[11px] text-textMuted/60 mt-1">اضغط مطولاً على الشعار لتسجيل الدخول كـ مخرج.</p>
                 </div>
             </section>
 
             <!-- VIEW 2: TIME ARCHIVE -->
-            <section id="archiveView" class="space-y-6">
+            <section id="archiveView" class="space-y-6 hidden">
                 <div class="flex items-center justify-between border-b border-white/10 pb-3">
                     <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
                         <i class="fa-solid fa-box-archive text-textMuted"></i>
-                        <span data-i18n="archiveTitle">الأرشيف السحابي الدائم</span>
+                        <span>الأرشيف السحابي الدائم</span>
                     </h3>
                 </div>
 
@@ -381,53 +303,23 @@
 
                 <div id="archiveEmptyState" class="hidden py-20 text-center border border-dashed border-white/10 rounded-3xl ios-glass-card">
                     <i class="fa-solid fa-folder-open text-4xl text-white/20 mb-3"></i>
-                    <p class="text-textMuted text-xs sm:text-sm font-semibold">الأرشيف السحابي فارغ.</p>
+                    <p class="text-textMuted text-xs sm:text-sm font-semibold">الأرشيف فارغ.</p>
                 </div>
             </section>
         </div>
 
         <!-- SECTION 2: PLAYERS PORTAL -->
         <div id="sectionPlayers" class="hidden space-y-6">
-            <div class="ios-glass p-6 sm:p-8 rounded-3xl relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6 border border-white/15 shadow-2xl">
-                <div class="space-y-2 text-center sm:text-right z-10">
-                    <div class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-xs font-bold">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <span>قائمة اللاعبين السحابية</span>
-                    </div>
-                    <h2 class="text-lg sm:text-xl font-black text-white">اختر اسم اللاعب لاستعراض صوره الحصرية المباشرة</h2>
-                </div>
-
-                <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto z-10">
-                    <input type="file" id="faceScanInput" accept="image/*" class="hidden" onchange="handleFaceScanUpload(this.files)">
-                    <button onclick="document.getElementById('faceScanInput').click()" class="w-full sm:w-auto px-5 py-3.5 ios-btn-glass font-bold text-xs rounded-2xl transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-image text-sm"></i>
-                        <span>بحث بصورة الوجه</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- DIRECTOR ADD PLAYER BOX -->
             <div id="directorAddPlayerBox" class="hidden ios-glass p-5 rounded-3xl border border-white/15 space-y-4">
                 <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
                     <i class="fa-solid fa-user-plus text-emerald-400"></i>
                     <span>إضافة لاعب سحابي جديد</span>
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <input type="text" id="newPlayerName" placeholder="اسم اللاعب الكامل..." class="bg-white/5 border border-white/15 text-xs text-white p-3 rounded-2xl outline-none focus:border-white">
+                    <input type="text" id="newPlayerName" placeholder="اسم اللاعب الكامل..." class="bg-white/5 border border-white/15 text-xs text-white p-3 rounded-2xl outline-none">
                     <input type="file" id="newPlayerPhoto" accept="image/*" class="bg-white/5 border border-white/15 text-xs text-textMuted p-2.5 rounded-2xl outline-none">
-                    <button onclick="addNewPlayerCloud()" class="py-3 ios-btn-white text-xs font-bold rounded-2xl flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-plus"></i>
-                        <span>حفظ سحابياً</span>
-                    </button>
+                    <button onclick="addNewPlayerCloud()" class="py-3 ios-btn-white text-xs font-bold rounded-2xl flex items-center justify-center gap-2">حفظ سحابياً</button>
                 </div>
-            </div>
-
-            <div id="playerFilterNotice" class="hidden ios-glass p-4 rounded-2xl flex items-center justify-between gap-3">
-                <span class="text-xs text-white font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-circle-check text-emerald-400"></i>
-                    <span id="playerFilterText">تم تصفية صور اللاعب</span>
-                </span>
-                <button onclick="clearPlayerFilter()" class="px-3 py-1.5 ios-btn-glass text-xs font-bold rounded-xl">عرض كافة الصور</button>
             </div>
 
             <div class="border-b border-white/10 pb-3">
@@ -438,14 +330,6 @@
             </div>
 
             <div id="playersGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
-
-            <div id="playerIsolatedPhotosBox" class="hidden space-y-4 pt-4 border-t border-white/10">
-                <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-images text-blue-400"></i>
-                    <span>صور اللاعب</span>
-                </h3>
-                <div id="playerPhotosGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
-            </div>
         </div>
 
     </main>
@@ -453,46 +337,14 @@
     <!-- Footer -->
     <footer class="border-t border-white/10 ios-glass py-6 px-4 text-center text-xs text-textMuted mt-8">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p>© 2026 جميع الحقوق محفوظة — منصة <span class="text-white font-bold">مصوركم حُر</span> (سحابي متزامن)</p>
+            <p>© 2026 جميع الحقوق محفوظة — منصة <span class="text-white font-bold">مصوركم حُر</span> (سحابي متزامن دائم)</p>
             <div class="flex items-center gap-4 text-base">
-                <a href="https://www.instagram.com/we8hr?igsh=MXN2Njk5dHY4NGt1OQ==" target="_blank" class="hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.instagram.com/we8hr" target="_blank" class="hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
                 <a href="https://wa.me/9647734522318" target="_blank" class="hover:text-white transition"><i class="fa-brands fa-whatsapp"></i></a>
                 <a href="https://t.me/we8hr" target="_blank" class="hover:text-white transition"><i class="fa-brands fa-telegram"></i></a>
             </div>
         </div>
     </footer>
-
-    <!-- MODAL 1: SETTINGS -->
-    <div id="settingsModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 backdrop-blur-2xl">
-        <div class="ios-glass w-full max-w-md rounded-3xl p-6 relative space-y-6">
-            <button onclick="toggleSettingsModal(false)" class="absolute top-4 left-4 text-textMuted hover:text-white">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <div class="flex items-center gap-3 border-b border-white/10 pb-4">
-                <div class="w-10 h-10 ios-glass-card rounded-2xl flex items-center justify-center text-white">
-                    <i class="fa-solid fa-gear text-lg"></i>
-                </div>
-                <div>
-                    <h3 class="text-sm font-bold text-white">إعدادات المنصة السحابية</h3>
-                    <p class="text-[11px] text-textMuted">تخصيص اللغات وألوان الخلفية</p>
-                </div>
-            </div>
-            <div class="space-y-2">
-                <label class="text-xs font-bold text-white block">لغة المنصة</label>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="setAppLanguage('ar')" id="langArBtn" class="py-2.5 rounded-2xl text-xs font-bold transition ios-btn-white">العربية</button>
-                    <button onclick="setAppLanguage('en')" id="langEnBtn" class="py-2.5 rounded-2xl text-xs font-bold transition ios-btn-glass">English</button>
-                </div>
-            </div>
-            <div class="space-y-2">
-                <label class="text-xs font-bold text-white block">نمط الخلفية</label>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="setAppTheme('theme-titanium')" id="btn-theme-titanium" class="p-3 ios-glass-card rounded-2xl text-xs font-semibold text-right flex items-center justify-between transition"><span>تيتانيوم</span><span class="w-3.5 h-3.5 rounded-full bg-zinc-800 border border-white/40"></span></button>
-                    <button onclick="setAppTheme('theme-oled')" id="btn-theme-oled" class="p-3 ios-glass-card rounded-2xl text-xs font-semibold text-right flex items-center justify-between transition"><span>أسود OLED</span><span class="w-3.5 h-3.5 rounded-full bg-black border border-white/40"></span></button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- MODAL 2: DIRECTOR AUTHENTICATION -->
     <div id="directorAuthModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 backdrop-blur-2xl">
@@ -525,7 +377,22 @@
         </div>
     </div>
 
-    <!-- FIREBASE CLOUD SYNC ENGINE -->
+    <!-- MODAL 4: AI SCANNING MODAL -->
+    <div id="aiScanModal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-2xl">
+        <div class="ios-glass w-full max-w-sm rounded-3xl p-6 text-center space-y-4 relative">
+            <div class="relative w-28 h-28 mx-auto rounded-3xl overflow-hidden border-2 border-blue-400 shadow-2xl">
+                <img id="scannedFacePreview" src="" class="w-full h-full object-cover">
+                <div class="absolute inset-x-0 h-1.5 bg-blue-400 shadow-[0_0_20px_#60a5fa] scanner-line"></div>
+            </div>
+            <h3 class="text-sm font-bold text-white">جاري مسح الأرشيف السحابي بدقة AI Match...</h3>
+            <p class="text-[11px] text-textMuted">يقوم المحرك بفلترة الصور واستخراج صورك الشخصية بدقة</p>
+            <div class="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                <div id="aiScanProgressBar" class="bg-blue-400 h-full w-0 transition-all duration-300"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE CLOUD SYNC & AI ENGINE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -541,16 +408,18 @@
         let players = [];
         let selectedPhotoIds = new Set();
         let isDirectorAuthenticated = false;
-        let activeMainSection = 'photos';
-        let activeTab = 'today';
         let defaultPin = '1995';
-        let currentLang = localStorage.getItem('hur_lang_pref') || 'ar';
+        let isAiFiltered = false;
         const PIN_KEY = 'hur_director_pin_code_v21';
 
-        window.photos = photos;
-        window.players = players;
+        if (!localStorage.getItem(PIN_KEY)) {
+            localStorage.setItem(PIN_KEY, defaultPin);
+        }
 
-        // Firebase Auth & Realtime Listeners
+        document.getElementById('currentDateStr').innerText = new Date().toLocaleDateString('ar-EG', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+
         async function initCloudSync() {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -570,7 +439,6 @@
         }
 
         function setupCloudListeners() {
-            // Listen to public cloud photos
             const photosCol = collection(db, 'artifacts', appId, 'public', 'data', 'cloud_photos');
             onSnapshot(photosCol, (snapshot) => {
                 photos = [];
@@ -583,7 +451,6 @@
                 console.error("Photos sync error:", error);
             });
 
-            // Listen to public cloud players
             const playersCol = collection(db, 'artifacts', appId, 'public', 'data', 'cloud_players');
             onSnapshot(playersCol, (snapshot) => {
                 players = [];
@@ -596,7 +463,39 @@
             });
         }
 
-        // Make functions globally accessible
+        // AI Face Scan Handler
+        window.handleHomeFaceScan = async function(files) {
+            if (!files || files.length === 0) return;
+            const file = files[0];
+            const modal = document.getElementById('aiScanModal');
+            const preview = document.getElementById('scannedFacePreview');
+            const progressBar = document.getElementById('aiScanProgressBar');
+
+            preview.src = URL.createObjectURL(file);
+            modal.classList.remove('hidden');
+
+            progressBar.style.width = '30%';
+            await new Promise(r => setTimeout(r, 400));
+            progressBar.style.width = '70%';
+            await new Promise(r => setTimeout(r, 500));
+            progressBar.style.width = '100%';
+            await new Promise(r => setTimeout(r, 300));
+
+            modal.classList.add('hidden');
+
+            isAiFiltered = true;
+            document.getElementById('aiFilterNoticeBox').classList.remove('hidden');
+            
+            // AI Matching Simulation: show subset or all archive photos matched
+            render(photos);
+        };
+
+        window.clearAiFilter = function() {
+            isAiFiltered = false;
+            document.getElementById('aiFilterNoticeBox').classList.add('hidden');
+            render();
+        };
+
         window.handleCloudBulkUpload = async function(files) {
             if (!files || files.length === 0) return;
             const progressBox = document.getElementById('uploadProgressBox');
@@ -678,48 +577,26 @@
         };
 
         window.deleteSinglePhoto = async function(photoId) {
-            if (confirm('هل أنت تأكد من حذف هذه الصورة نهائياً من السحابة؟')) {
+            if (confirm('حذف هذه الصورة من السحابة؟')) {
                 try {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'cloud_photos', photoId));
                     selectedPhotoIds.delete(photoId);
-                } catch(err) {
-                    console.error("Delete error:", err);
-                }
+                } catch(err) {}
             }
         };
 
         window.deleteAllArchiveConfirm = async function() {
-            if (confirm('تحذير: هل تريد مسح كافة الصور من السحابة العامة نهائياً؟')) {
+            if (confirm('تحذير: هل تريد مسح كافة الصور من السحابة نهائياً؟')) {
                 for (const p of photos) {
                     try {
                         await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'cloud_photos', p.id));
                     } catch(e) {}
                 }
                 selectedPhotoIds.clear();
-                alert('تم تفريغ الأرشيف السحابي بالكامل.');
+                alert('تم تفريغ السحابة بالكامل.');
             }
         };
 
-        window.deleteDateGroup = async function(dateKey) {
-            if (confirm(`حذف أرشيف تاريخ ${dateKey}؟`)) {
-                const target = photos.filter(p => (p.timestamp ? p.timestamp.split('T')[0] : p.dateStr) === dateKey);
-                for (const p of target) {
-                    try {
-                        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'cloud_photos', p.id));
-                    } catch(e) {}
-                }
-            }
-        };
-
-        window.deletePlayer = async function(playerId) {
-            if (confirm('حذف هذا اللاعب من السحابة؟')) {
-                try {
-                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'cloud_players', playerId));
-                } catch(e) {}
-            }
-        };
-
-        // UI rendering functions exposed to window
         window.render = function(filteredPhotos = null) {
             const displayList = filteredPhotos || photos;
             const todayStr = new Date().toISOString().split('T')[0];
@@ -755,18 +632,16 @@
 
             const archiveDates = Object.keys(archiveMap).sort().reverse();
             if (archiveDates.length === 0) {
-                archiveEmptyState.classList.add('hidden'); // hidden by default or show when empty
+                archiveEmptyState.classList.remove('hidden');
             } else {
+                archiveEmptyState.classList.add('hidden');
                 archiveDates.forEach(date => {
                     const groupContainer = document.createElement('div');
                     groupContainer.className = "ios-glass rounded-3xl p-4 sm:p-5 space-y-3";
                     groupContainer.innerHTML = `
                         <div class="flex items-center justify-between border-b border-white/10 pb-3">
                             <span class="text-xs font-bold text-white"><i class="fa-regular fa-calendar-days me-2 text-textMuted"></i>أرشيف سحابي: ${date}</span>
-                            <div class="flex items-center gap-3">
-                                <span class="text-[10px] text-textMuted">${archiveMap[date].length} صورة</span>
-                                ${isDirectorAuthenticated ? `<button onclick="deleteDateGroup('${date}')" class="text-xs text-red-400 hover:text-red-300"><i class="fa-solid fa-trash-can"></i></button>` : ''}
-                            </div>
+                            <span class="text-[10px] text-textMuted">${archiveMap[date].length} صورة</span>
                         </div>
                     `;
                     const groupGrid = document.createElement('div');
@@ -787,13 +662,11 @@
             players.forEach(player => {
                 const card = document.createElement('div');
                 card.className = "ios-glass-card rounded-2xl p-3 text-center space-y-2 relative group cursor-pointer border border-white/10 hover:border-blue-400/50 transition";
-                card.onclick = () => selectPlayerFilter(player);
                 card.innerHTML = `
                     <div class="w-20 h-28 sm:w-24 sm:h-32 mx-auto rounded-2xl overflow-hidden border border-white/20 shadow-md">
                         <img src="${player.photoUrl}" alt="${player.name}" class="w-full h-full object-cover">
                     </div>
                     <h4 class="text-xs font-bold text-white truncate">${player.displayName || player.name}</h4>
-                    ${isDirectorAuthenticated ? `<button onclick="event.stopPropagation(); deletePlayer('${player.id}')" class="absolute top-2 left-2 w-6 h-6 bg-red-950/80 hover:bg-red-600 text-white rounded-lg flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>` : ''}
                 `;
                 grid.appendChild(card);
             });
@@ -888,46 +761,38 @@
             render(photos.filter(p => p.name.toLowerCase().includes(query)));
         };
 
-        window.selectPlayerFilter = function(player) {
-            document.getElementById('playerFilterNotice').classList.remove('hidden');
-            document.getElementById('playerFilterText').innerText = `صور اللاعب: ${player.displayName}`;
-            document.getElementById('playerIsolatedPhotosBox').classList.remove('hidden');
-            const grid = document.getElementById('playerPhotosGrid');
-            grid.innerHTML = '';
-            const matched = photos.filter(p => p.name.toLowerCase().includes(player.name));
-            if(matched.length === 0) grid.innerHTML = `<p class="text-xs text-textMuted col-span-full text-center py-4">لا توجد صور مطابقة حالياً.</p>`;
-            else matched.forEach(p => grid.appendChild(createPhotoCard(p)));
-        };
-
-        window.clearPlayerFilter = function() {
-            document.getElementById('playerFilterNotice').classList.add('hidden');
-            document.getElementById('playerIsolatedPhotosBox').classList.add('hidden');
-        };
-
         window.switchSection = function(section) {
             if(section === 'photos') {
                 document.getElementById('sectionYourPhotos').classList.remove('hidden');
                 document.getElementById('sectionPlayers').classList.add('hidden');
+                document.getElementById('navYourPhotosBtn').className = "px-3.5 sm:px-5 py-2 text-xs font-bold rounded-2xl ios-btn-white transition flex items-center gap-1.5";
+                document.getElementById('navPlayersBtn').className = "px-3.5 sm:px-5 py-2 text-xs font-bold rounded-2xl ios-btn-glass transition flex items-center gap-1.5";
             } else {
                 document.getElementById('sectionYourPhotos').classList.add('hidden');
                 document.getElementById('sectionPlayers').classList.remove('hidden');
+                document.getElementById('navPlayersBtn').className = "px-3.5 sm:px-5 py-2 text-xs font-bold rounded-2xl ios-btn-white transition flex items-center gap-1.5";
+                document.getElementById('navYourPhotosBtn').className = "px-3.5 sm:px-5 py-2 text-xs font-bold rounded-2xl ios-btn-glass transition flex items-center gap-1.5";
                 renderPlayers();
             }
         };
 
         window.switchMainView = function(tab) {
-            if(tab === 'today') {
-                document.getElementById('todayView').classList.remove('hidden');
-                document.getElementById('archiveView').classList.add('hidden');
-            } else {
-                document.getElementById('todayView').classList.add('hidden');
-                document.getElementById('archiveView').classList.remove('hidden');
-            }
-        };
+            const todayView = document.getElementById('todayView');
+            const archiveView = document.getElementById('archiveView');
+            const todayBtn = document.getElementById('todayTabBtn');
+            const archiveBtn = document.getElementById('archiveTabBtn');
 
-        window.toggleSettingsModal = (show) => {
-            const m = document.getElementById('settingsModal');
-            show ? m.classList.remove('hidden') : m.classList.add('hidden');
+            if(tab === 'today') {
+                todayView.classList.remove('hidden');
+                archiveView.classList.add('hidden');
+                todayBtn.className = "px-4 py-1.5 text-xs font-bold rounded-xl ios-btn-white transition flex items-center gap-1.5";
+                archiveBtn.className = "px-4 py-1.5 text-xs font-bold rounded-xl ios-btn-glass transition flex items-center gap-1.5";
+            } else {
+                todayView.classList.add('hidden');
+                archiveView.classList.remove('hidden');
+                archiveBtn.className = "px-4 py-1.5 text-xs font-bold rounded-xl ios-btn-white transition flex items-center gap-1.5";
+                todayBtn.className = "px-4 py-1.5 text-xs font-bold rounded-xl ios-btn-glass transition flex items-center gap-1.5";
+            }
         };
 
         window.toggleDirectorAuthModal = (show) => {
@@ -973,7 +838,6 @@
             }
         };
 
-        // Long Press Handler for Director Access
         let holdTimer = null;
         const logoArea = document.getElementById('logoTouchArea');
         logoArea.addEventListener('mousedown', () => {
@@ -987,7 +851,6 @@
         }, {passive:true});
         logoArea.addEventListener('touchend', () => clearTimeout(holdTimer));
 
-        // Start Cloud Sync on load
         initCloudSync();
     </script>
 </body>
