@@ -1,0 +1,1463 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مصوركم حُر | Hur AI Media Engine Pro</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        glassBorder: 'rgba(255, 255, 255, 0.12)',
+                        textMuted: '#9e9ea7'
+                    },
+                    fontFamily: {
+                        sans: ['IBM Plex Sans Arabic', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- JSZip for Bulk Fast Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            color: #f4f4f6;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            user-select: none;
+            overflow-x: hidden;
+            transition: background 0.4s ease-in-out;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        body.theme-titanium {
+            background-color: #0b0b0e !important;
+            background-image: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 60%) !important;
+        }
+
+        body.theme-oled {
+            background-color: #000000 !important;
+            background-image: none !important;
+        }
+
+        body.theme-charcoal {
+            background-color: #121418 !important;
+            background-image: radial-gradient(circle at 20% 20%, rgba(150, 150, 160, 0.08) 0%, transparent 50%) !important;
+        }
+
+        body.theme-midnight {
+            background-color: #080d1a !important;
+            background-image: radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 65%) !important;
+        }
+
+        /* iOS Glass Styles */
+        .ios-glass {
+            background: rgba(18, 18, 24, 0.75);
+            backdrop-filter: blur(35px) saturate(190%);
+            -webkit-backdrop-filter: blur(35px) saturate(190%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .ios-glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: transform 0.15s cubic-bezier(0, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        .ios-glass-card:active {
+            transform: scale(0.96) translateZ(0);
+        }
+
+        .theme-active-card {
+            border-color: rgba(255, 255, 255, 0.8) !important;
+            background: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        .ios-btn-glass {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #f4f4f6;
+            transition: all 0.15s ease-out;
+        }
+
+        .ios-btn-glass:active {
+            transform: scale(0.95);
+        }
+
+        .ios-btn-white {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            color: #040405;
+            box-shadow: 0 4px 25px rgba(255, 255, 255, 0.25);
+            transition: all 0.15s ease-out;
+        }
+
+        .ios-btn-white:active {
+            transform: scale(0.95);
+        }
+
+        .zoom-target {
+            transition: transform 0.15s cubic-bezier(0.1, 0.9, 0.2, 1);
+            will-change: transform;
+            transform-origin: center center;
+            touch-action: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 99px;
+        }
+
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.05s linear;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        @keyframes scanGrid {
+            0% { transform: translateY(-100%); opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { transform: translateY(100%); opacity: 0.3; }
+        }
+        .scanner-line {
+            animation: scanGrid 1.5s ease-in-out infinite alternate;
+        }
+    </style>
+</head>
+<body class="theme-titanium min-h-screen flex flex-col justify-between selection:bg-white/20 selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 ios-glass border-b border-white/10 px-4 sm:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <!-- Logo Container (Long press triggers director mode) -->
+            <div class="relative group select-none" id="logoTouchArea">
+                <div id="logoContainer" class="flex items-center gap-3 cursor-pointer p-1 rounded-2xl transition active:scale-95">
+                    <div class="relative">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 ios-glass-card rounded-2xl flex items-center justify-center text-white text-lg shadow-inner">
+                            <i class="fa-solid fa-camera-retro"></i>
+                        </div>
+                        <span id="directorStatusDot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-400 border-2 border-black rounded-full animate-pulse"></span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white" id="brandTitle">مصوركم حُر</h1>
+                            <span id="directorBadge" class="hidden text-[9px] font-mono uppercase font-semibold bg-white/10 text-white/80 px-2 py-0.5 rounded-full border border-white/20">DIRECTOR</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hold Progress Ring -->
+                <div id="holdProgressRing" class="absolute -inset-1.5 pointer-events-none hidden flex items-center justify-center">
+                    <svg class="w-16 h-16">
+                        <circle class="text-white/10" stroke-width="2.5" stroke="currentColor" fill="transparent" r="25" cx="32" cy="32"/>
+                        <circle id="holdCircle" class="text-white progress-ring-circle" stroke-width="2.5" stroke-dasharray="157.07" stroke-dashoffset="157.07" stroke-linecap="round" stroke="currentColor" fill="transparent" r="25" cx="32" cy="32"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- PRIMARY NAVIGATION TABS -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                <button id="navYourPhotosBtn" onclick="switchSection('photos')" class="px-3.5 sm:px-5 py-2 text-xs font-bold rounded-2xl ios-btn-white transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-images text-[11px]"></i>
+                    <span data-i18n="yourPhotos">صوركم</span>
+                </button>
+                <button id="navPlayersBtn" onclick="switchSection('players')" class="px-3.5 sm:px-5 py-2 text-xs font-bold rounded-2xl ios-btn-glass transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-ninja text-[11px]"></i>
+                    <span data-i18n="players">اللاعبين</span>
+                </button>
+                <button onclick="toggleSettingsModal(true)" class="p-2 sm:px-3 py-2 text-xs font-bold rounded-2xl ios-btn-glass transition" title="الإعدادات">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-8 py-5 flex-grow w-full space-y-5">
+
+        <!-- SECTION 1: YOUR PHOTOS (صوركم) - WITH AI MATCHING BANNER -->
+        <div id="sectionYourPhotos" class="space-y-5">
+            
+            <!-- AI FACE MATCHING BANNER IN PHOTOS SECTION -->
+            <div class="ios-glass p-6 sm:p-7 rounded-3xl relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-5 border border-white/15 shadow-2xl">
+                <div class="space-y-2 text-center sm:text-right z-10">
+                    <div class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-xs font-bold">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>نظام مطابقة الوجه بالذكاء الاصطناعي (AI Match)</span>
+                    </div>
+                    <h2 class="text-base sm:text-lg font-black text-white">اعثر على صورك الشخصية في ثوانٍ معدودة!</h2>
+                    <p class="text-xs text-textMuted max-w-lg">التقط سيلفي مباشر أو ارفع صورتك الشخصية ليتولى النظام مسح الأرشيف وإظهار صورك حصرياً بدقة مطابقة تامة.</p>
+                </div>
+
+                <div class="flex items-center gap-2.5 w-full sm:w-auto z-10">
+                    <input type="file" id="homeFaceInput" accept="image/*" class="hidden" onchange="handleHomeFaceScan(this.files)">
+                    <input type="file" id="homeCameraInput" accept="image/*" capture="user" class="hidden" onchange="handleHomeFaceScan(this.files)">
+                    
+                    <button onclick="document.getElementById('homeCameraInput').click()" class="flex-1 sm:flex-none px-5 py-3 ios-btn-white font-bold text-xs rounded-2xl transition flex items-center justify-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-camera text-blue-600"></i>
+                        <span>سيلفي مباشر</span>
+                    </button>
+                    <button onclick="document.getElementById('homeFaceInput').click()" class="flex-1 sm:flex-none px-5 py-3 ios-btn-glass font-bold text-xs rounded-2xl transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-image"></i>
+                        <span>رفع صورة</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 bg-white/5 p-2 rounded-2xl ios-glass">
+                <div class="flex items-center gap-2">
+                    <button id="todayTabBtn" onclick="switchMainView('today')" class="px-4 py-1.5 text-xs font-bold rounded-xl ios-btn-white transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-bolt text-[10px]"></i>
+                        <span data-i18n="todayPhotos">صور اليوم</span>
+                    </button>
+                    <button id="archiveTabBtn" onclick="switchMainView('archive')" class="px-4 py-1.5 text-xs font-bold rounded-xl ios-btn-glass transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-clock-rotate-left text-[10px]"></i>
+                        <span data-i18n="archive">الأرشيف</span>
+                    </button>
+                </div>
+                <span class="text-[11px] text-textMuted hidden sm:inline" id="currentDateStr"></span>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-4 ios-glass-card p-4 rounded-3xl">
+                <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
+                    <div class="flex items-center gap-2 text-xs text-textMuted font-medium">
+                        <span data-i18n="selected">المحدد:</span>
+                        <span id="selectedCountBadge" class="font-bold text-white text-sm ios-glass px-3 py-0.5 rounded-xl">0</span>
+                    </div>
+                    <div class="h-4 w-px bg-white/10"></div>
+                    <div class="flex items-center gap-3 text-xs">
+                        <button onclick="selectAllPhotos()" class="text-textMuted hover:text-white transition font-medium underline" data-i18n="selectAll">تحديد الكل</button>
+                        <button onclick="deselectAllPhotos()" class="text-textMuted hover:text-white transition font-medium underline" data-i18n="deselectAll">إلغاء التحديد</button>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2.5 w-full sm:w-auto">
+                    <button id="galleryDownloadBtn" onclick="downloadSelectedDirect()" disabled class="flex-1 sm:flex-none px-5 py-2.5 ios-btn-white disabled:opacity-20 disabled:cursor-not-allowed font-bold rounded-2xl text-xs transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-mobile-screen"></i>
+                        <span data-i18n="saveToGallery">حفظ بمعرض الهاتف</span>
+                    </button>
+                    <button id="zipDownloadBtn" onclick="downloadSelectedZip()" disabled class="flex-1 sm:flex-none px-5 py-2.5 ios-btn-glass disabled:opacity-20 disabled:cursor-not-allowed font-bold rounded-2xl text-xs transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-zipper"></i>
+                        <span data-i18n="downloadZip">تنزيل ملف ZIP</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- DIRECTOR PANEL -->
+            <section id="directorPanel" class="hidden ios-glass p-6 sm:p-8 rounded-3xl relative space-y-6">
+                <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                    <div class="flex items-center gap-3">
+                        <span class="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping"></span>
+                        <h2 class="text-xs sm:text-sm font-bold text-white uppercase tracking-wider" data-i18n="directorPanelTitle">لوحة الرفع الفوري للمخرج</h2>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs">
+                        <button onclick="changePinCodePrompt()" class="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl border border-white/20 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-key"></i>
+                            <span>تغيير كلمة السر</span>
+                        </button>
+                        <button onclick="logoutDirectorMode()" class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/20 font-bold rounded-2xl transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span data-i18n="logout">تسجيل الخروج</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-red-500/5 border border-red-500/20 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5 text-xs text-red-200">
+                        <i class="fa-solid fa-triangle-exclamation text-red-400 text-sm"></i>
+                        <span data-i18n="deleteWarning">إدارة الأرشيف السريع: مسح جميع الصور المخزنة نهائياً بضغطة زر واحدة</span>
+                    </div>
+                    <button onclick="deleteAllArchiveConfirm()" class="px-4 py-2 bg-red-600/80 hover:bg-red-600 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span data-i18n="deleteAllArchive">حذف الأرشيف بالكامل</span>
+                    </button>
+                </div>
+
+                <div id="dropZone" class="border-2 border-dashed border-white/15 hover:border-white/40 bg-white/5 rounded-2xl p-6 sm:p-10 text-center transition cursor-pointer flex flex-col items-center justify-center gap-3">
+                    <input type="file" id="fileInput" multiple accept="image/*" class="hidden" onchange="handleInstantBulkFilesUpload(this.files)">
+                    <input type="file" id="folderInput" webkitdirectory directory multiple class="hidden" onchange="handleInstantBulkFilesUpload(this.files)">
+
+                    <div class="w-14 h-14 ios-glass-card rounded-2xl flex items-center justify-center text-2xl text-white shadow-inner">
+                        <i class="fa-solid fa-bolt text-yellow-300"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs sm:text-sm font-bold text-white" data-i18n="uploadSpeedText">رفع خارق للسرعة: 100 صورة في ثانية واحدة</p>
+                        <p class="text-[11px] text-textMuted mt-1" data-i18n="uploadSubText">توليد ومعالجة متوازية بدقة كاملة بدون أي انتظار</p>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center gap-3 mt-2">
+                        <button onclick="document.getElementById('fileInput').click()" class="px-5 py-2.5 ios-btn-white text-xs font-bold rounded-2xl transition">
+                            <i class="fa-solid fa-photo-film me-1.5"></i> <span data-i18n="selectPhotos">اختيار صور</span>
+                        </button>
+                        <button onclick="document.getElementById('folderInput').click()" class="px-5 py-2.5 ios-btn-glass text-xs font-bold rounded-2xl transition">
+                            <i class="fa-solid fa-folder-plus me-1.5"></i> <span data-i18n="uploadFolder">رفع مجلد كامل (+1000)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="uploadProgressBox" class="hidden space-y-2 ios-glass p-4 rounded-2xl">
+                    <div class="flex justify-between text-xs text-textMuted font-mono">
+                        <span id="uploadStatusText">جاري الرفع الفوري...</span>
+                        <span id="uploadPercentText">0%</span>
+                    </div>
+                    <div class="w-full bg-white/10 rounded-full h-2 overflow-hidden border border-white/10">
+                        <div id="uploadProgressBar" class="bg-white h-full w-0 transition-all duration-75"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Search Bar -->
+            <div class="flex items-center justify-between gap-3 ios-glass-card p-3 rounded-2xl">
+                <div class="relative flex-grow">
+                    <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-textMuted"></i>
+                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="بحث باسم الصورة أو التغطية..." class="w-full bg-transparent border-none text-xs text-white rounded-xl pl-3 pr-9 py-2 outline-none transition placeholder:text-textMuted/60">
+                </div>
+                <div id="totalCounterBadge" class="text-xs text-textMuted hidden sm:block"></div>
+            </div>
+
+            <!-- VIEW 1: TODAY'S COVERAGE -->
+            <section id="todayView" class="space-y-4">
+                <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                    <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-fire-flame-curved text-textMuted"></i>
+                        <span data-i18n="todayTitle">تغطيات اليوم الحالية</span>
+                    </h3>
+                    <span class="text-[10px] ios-glass px-3 py-1 rounded-full text-textMuted" data-i18n="archiveNotice">
+                        تُنقل للأرشيف تلقائياً بعد 24 ساعة
+                    </span>
+                </div>
+
+                <div id="todayPhotosGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
+
+                <div id="todayEmptyState" class="hidden py-20 text-center border border-dashed border-white/10 rounded-3xl ios-glass-card">
+                    <i class="fa-solid fa-camera-retro text-4xl text-white/20 mb-3"></i>
+                    <p class="text-textMuted text-xs sm:text-sm font-semibold" data-i18n="emptyToday">لا توجد صور مرفوعة في تغطية اليوم حتى الآن.</p>
+                    <p class="text-[11px] text-textMuted/60 mt-1" data-i18n="emptyTodaySub">اضغط مطولاً على الشعار للوصول لوضع المُخرج ورفع الصور.</p>
+                </div>
+            </section>
+
+            <!-- VIEW 2: TIME ARCHIVE -->
+            <section id="archiveView" class="space-y-6">
+                <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                    <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-box-archive text-textMuted"></i>
+                        <span data-i18n="archiveTitle">الأرشيف الزمني الموثق</span>
+                    </h3>
+                </div>
+
+                <div id="archiveGroupList" class="space-y-6"></div>
+
+                <div id="archiveEmptyState" class="hidden py-20 text-center border border-dashed border-white/10 rounded-3xl ios-glass-card">
+                    <i class="fa-solid fa-folder-open text-4xl text-white/20 mb-3"></i>
+                    <p class="text-textMuted text-xs sm:text-sm font-semibold" data-i18n="emptyArchive">الأرشيف فارغ لا يحتوي على صور سابقة.</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- SECTION 2: PLAYERS PORTAL -->
+        <div id="sectionPlayers" class="hidden space-y-6">
+            
+            <div class="ios-glass p-6 sm:p-8 rounded-3xl relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6 border border-white/15 shadow-2xl">
+                <div class="space-y-2 text-center sm:text-right z-10">
+                    <div class="inline-flex items-center gap-2 bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-xs font-bold">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>قائمة اللاعبين وتغطياتهم الخاصة</span>
+                    </div>
+                    <h2 class="text-lg sm:text-xl font-black text-white">اختر اسم اللاعب لاستعراض صوره الحصرية المباشرة</h2>
+                    <p class="text-xs text-textMuted max-w-xl">يمكنك الضغط على اسم أي لاعب لإظهار صوره المرفوعة بدقة تامة.</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto z-10">
+                    <input type="file" id="faceScanInput" accept="image/*" class="hidden" onchange="handleFaceScanUpload(this.files)">
+                    <input type="file" id="cameraSelfieInput" accept="image/*" capture="user" class="hidden" onchange="handleFaceScanUpload(this.files)">
+                    
+                    <button onclick="document.getElementById('cameraSelfieInput').click()" class="w-full sm:w-auto px-5 py-3.5 ios-btn-white font-bold text-xs rounded-2xl transition flex items-center justify-center gap-2 shadow-xl">
+                        <i class="fa-solid fa-camera text-sm text-blue-600"></i>
+                        <span>سيلفي مباشر</span>
+                    </button>
+                    <button onclick="document.getElementById('faceScanInput').click()" class="w-full sm:w-auto px-5 py-3.5 ios-btn-glass font-bold text-xs rounded-2xl transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-image text-sm"></i>
+                        <span>صورة المعرض</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- DIRECTOR ADD PLAYER BOX -->
+            <div id="directorAddPlayerBox" class="hidden ios-glass p-5 rounded-3xl border border-white/15 space-y-4">
+                <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus text-emerald-400"></i>
+                    <span>إضافة لاعب جديد (خاص بالجهة المُخرجة)</span>
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <input type="text" id="newPlayerName" placeholder="اسم اللاعب الكامل..." class="bg-white/5 border border-white/15 text-xs text-white p-3 rounded-2xl outline-none focus:border-white">
+                    <input type="file" id="newPlayerPhoto" accept="image/*" class="bg-white/5 border border-white/15 text-xs text-textMuted p-2.5 rounded-2xl outline-none">
+                    <button onclick="addNewPlayerByDirector()" class="py-3 ios-btn-white text-xs font-bold rounded-2xl flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>حفظ بيانات اللاعب</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="playerFilterNotice" class="hidden ios-glass p-4 rounded-2xl flex items-center justify-between gap-3">
+                <span class="text-xs text-white font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                    <span id="playerFilterText">تم تصفية صور اللاعب</span>
+                </span>
+                <button onclick="clearPlayerFilter()" class="px-3 py-1.5 ios-btn-glass text-xs font-bold rounded-xl">
+                    عرض كافة الصور
+                </button>
+            </div>
+
+            <div class="border-b border-white/10 pb-3">
+                <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-users text-blue-400"></i>
+                    <span>قائمة اللاعبين المعتمدين</span>
+                </h3>
+            </div>
+
+            <div id="playersGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
+
+            <div id="playersEmptyState" class="hidden py-16 text-center border border-dashed border-white/10 rounded-3xl ios-glass-card">
+                <i class="fa-solid fa-users text-4xl text-white/20 mb-3"></i>
+                <p class="text-textMuted text-xs sm:text-sm font-semibold">لا يوجد لاعبين مضافين حالياً.</p>
+                <p class="text-[11px] text-textMuted/60 mt-1">قم بتسجيل الدخول كـ مخرج لإضافة ملفات اللاعبين.</p>
+            </div>
+
+            <div id="playerIsolatedPhotosBox" class="hidden space-y-4 pt-4 border-t border-white/10">
+                <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-images text-blue-400"></i>
+                    <span>صور اللاعب</span>
+                </h3>
+                <div id="playerPhotosGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 ios-glass py-6 px-4 text-center text-xs text-textMuted mt-8">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>© 2026 جميع الحقوق محفوظة — منصة <span class="text-white font-bold">مصوركم حُر</span></p>
+            <div class="flex items-center gap-4 text-base">
+                <a href="https://www.instagram.com/we8hr?igsh=MXN2Njk5dHY4NGt1OQ==" target="_blank" class="hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/9647734522318" target="_blank" class="hover:text-white transition"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://t.me/we8hr" target="_blank" class="hover:text-white transition"><i class="fa-brands fa-telegram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: SETTINGS -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 backdrop-blur-2xl">
+        <div class="ios-glass w-full max-w-md rounded-3xl p-6 relative space-y-6">
+            <button onclick="toggleSettingsModal(false)" class="absolute top-4 left-4 text-textMuted hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+                <div class="w-10 h-10 ios-glass-card rounded-2xl flex items-center justify-center text-white">
+                    <i class="fa-solid fa-gear text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-white" data-i18n="settingsTitle">إعدادات المنصة</h3>
+                    <p class="text-[11px] text-textMuted" data-i18n="settingsSub">تخصيص اللغات وألوان الخلفية والتواصل</p>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-white block" data-i18n="selectLanguage">لغة المنصة (Language)</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="setAppLanguage('ar')" id="langArBtn" class="py-2.5 rounded-2xl text-xs font-bold transition ios-btn-white">العربية (Arabic)</button>
+                    <button onclick="setAppLanguage('en')" id="langEnBtn" class="py-2.5 rounded-2xl text-xs font-bold transition ios-btn-glass">English</button>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-white block" data-i18n="selectTheme">نمط ولون الخلفية</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="setAppTheme('theme-titanium')" id="btn-theme-titanium" class="p-3 ios-glass-card rounded-2xl text-xs font-semibold text-right flex items-center justify-between transition">
+                        <span>تيتانيوم داكن</span>
+                        <span class="w-3.5 h-3.5 rounded-full bg-zinc-800 border border-white/40"></span>
+                    </button>
+                    <button onclick="setAppTheme('theme-oled')" id="btn-theme-oled" class="p-3 ios-glass-card rounded-2xl text-xs font-semibold text-right flex items-center justify-between transition">
+                        <span>أسود OLED</span>
+                        <span class="w-3.5 h-3.5 rounded-full bg-black border border-white/40"></span>
+                    </button>
+                    <button onclick="setAppTheme('theme-charcoal')" id="btn-theme-charcoal" class="p-3 ios-glass-card rounded-2xl text-xs font-semibold text-right flex items-center justify-between transition">
+                        <span>فحمي زجاجي</span>
+                        <span class="w-3.5 h-3.5 rounded-full bg-slate-800 border border-white/40"></span>
+                    </button>
+                    <button onclick="setAppTheme('theme-midnight')" id="btn-theme-midnight" class="p-3 ios-glass-card rounded-2xl text-xs font-semibold text-right flex items-center justify-between transition">
+                        <span>أزرق ليلي</span>
+                        <span class="w-3.5 h-3.5 rounded-full bg-blue-900 border border-blue-400/50"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-2 border-t border-white/10 pt-4">
+                <label class="text-xs font-bold text-white block" data-i18n="socialContact">حسابات التواصل الإعلامية</label>
+                <div class="space-y-2">
+                    <a href="https://www.instagram.com/we8hr?igsh=MXN2Njk5dHY4NGt1OQ==" target="_blank" class="flex items-center justify-between p-3 ios-glass-card rounded-2xl text-xs hover:bg-white/10 transition">
+                        <span class="flex items-center gap-2.5"><i class="fa-brands fa-instagram text-lg text-pink-400"></i> Instagram</span>
+                        <span class="text-textMuted font-mono text-[11px]">@we8hr</span>
+                    </a>
+                    <a href="https://wa.me/9647734522318" target="_blank" class="flex items-center justify-between p-3 ios-glass-card rounded-2xl text-xs hover:bg-white/10 transition">
+                        <span class="flex items-center gap-2.5"><i class="fa-brands fa-whatsapp text-lg text-green-400"></i> WhatsApp</span>
+                        <span class="text-textMuted font-mono text-[11px]">+964 773 452 2318</span>
+                    </a>
+                    <a href="https://t.me/we8hr" target="_blank" class="flex items-center justify-between p-3 ios-glass-card rounded-2xl text-xs hover:bg-white/10 transition">
+                        <span class="flex items-center gap-2.5"><i class="fa-brands fa-telegram text-lg text-sky-400"></i> Telegram</span>
+                        <span class="text-textMuted font-mono text-[11px]">t.me/we8hr</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: DIRECTOR AUTHENTICATION -->
+    <div id="directorAuthModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 backdrop-blur-2xl">
+        <div class="ios-glass w-full max-w-sm rounded-3xl p-6 relative space-y-5">
+            <button onclick="toggleDirectorAuthModal(false)" class="absolute top-4 left-4 text-textMuted hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-center space-y-2">
+                <div class="w-12 h-12 ios-glass-card rounded-2xl flex items-center justify-center mx-auto text-white text-xl">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3 class="text-sm font-bold text-white" data-i18n="directorAuth">التحقق من هوية المُخرِج</h3>
+                <p class="text-[11px] text-textMuted" data-i18n="directorAuthSub">أدخل الرمز السرّي للوصول لصلحيات الإدارة والرفع</p>
+            </div>
+
+            <div class="space-y-3">
+                <input type="password" id="directorPinInput" placeholder="أدخل الرمز السرّي..." maxlength="8" class="w-full ios-glass-card text-center text-xl tracking-widest text-white rounded-2xl py-3 outline-none border border-white/15 focus:border-white transition">
+                <p id="pinErrorText" class="text-xs text-red-400 text-center hidden">الرمز السرّي غير صحيح!</p>
+                <button onclick="verifyDirectorPin()" class="w-full py-3 ios-btn-white font-bold text-xs rounded-2xl transition" data-i18n="confirm">
+                    تأكيد الدخول
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: FULLSCREEN PHOTO PREVIEW -->
+    <div id="previewModal" class="fixed inset-0 bg-black/98 z-50 hidden flex flex-col justify-between p-3 sm:p-5 backdrop-blur-3xl select-none" onclick="handleOutsideModalClick(event)">
+        
+        <div class="w-full flex justify-between items-center z-50 py-3 px-2 border-b border-white/10" onclick="event.stopPropagation()">
+            <div class="text-[11px] text-textMuted font-mono flex items-center gap-2 truncate" id="previewMeta"></div>
+            
+            <button onclick="closePreview()" class="px-5 py-2.5 ios-btn-white text-black font-bold rounded-2xl text-xs flex items-center gap-2 shadow-2xl transition hover:scale-105 active:scale-95" title="إغلاق المعاينة">
+                <i class="fa-solid fa-xmark text-base"></i>
+                <span>إغلاق وخروج</span>
+            </button>
+        </div>
+
+        <div class="relative flex-grow w-full flex items-center justify-center my-2 overflow-hidden" id="zoomViewport">
+            <img id="previewImg" src="" alt="معاينة الصورة" class="zoom-target max-h-[75vh] max-w-full object-contain rounded-2xl border border-white/10 shadow-2xl">
+        </div>
+
+        <div class="flex items-center gap-3 z-50 pb-2 w-full sm:w-auto justify-center" onclick="event.stopPropagation()">
+            <button onclick="zoomStep(-0.3)" class="w-10 h-10 ios-glass rounded-xl flex items-center justify-center text-white text-sm">
+                <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </button>
+            <button onclick="resetZoom()" class="px-3 py-2 ios-glass rounded-xl text-xs font-mono text-white">
+                <span id="zoomScaleText">100%</span>
+            </button>
+            <button onclick="zoomStep(0.3)" class="w-10 h-10 ios-glass rounded-xl flex items-center justify-center text-white text-sm">
+                <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </button>
+            <button id="singleGalleryDownloadBtn" class="px-6 py-2.5 ios-btn-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 transition">
+                <i class="fa-solid fa-download"></i>
+                <span data-i18n="saveToGallery">حفظ في معرض الهاتف</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 4: AI SCANNING MODAL -->
+    <div id="aiScanModal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-2xl">
+        <div class="ios-glass w-full max-w-sm rounded-3xl p-6 text-center space-y-4 relative">
+            <div class="relative w-28 h-28 mx-auto rounded-3xl overflow-hidden border-2 border-blue-400 shadow-2xl">
+                <img id="scannedFacePreview" src="" class="w-full h-full object-cover">
+                <div class="absolute inset-x-0 h-1.5 bg-blue-400 shadow-[0_0_20px_#60a5fa] scanner-line"></div>
+            </div>
+            <h3 class="text-sm font-bold text-white">جاري مسح الأرشيف بدقة AI Match...</h3>
+            <p class="text-[11px] text-textMuted">يقوم المحرك بفلترة واستخراج الصور المطلوبة</p>
+            <div class="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                <div id="aiScanProgressBar" class="bg-blue-400 h-full w-0 transition-all duration-300"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT ULTRA SPEED ENGINE & I18N -->
+    <script>
+        const STORAGE_KEY = 'hur_photographer_v21_store';
+        const PLAYERS_KEY = 'hur_players_v21_store';
+        const PIN_KEY = 'hur_director_pin_code_v21';
+        const LANG_KEY = 'hur_lang_pref';
+        const THEME_KEY = 'hur_theme_pref';
+
+        let photos = [];
+        let players = [];
+        let selectedPhotoIds = new Set();
+        let isDirectorAuthenticated = false;
+        let activeMainSection = 'photos';
+        let activeTab = 'today';
+        let defaultPin = '1995';
+        let currentLang = localStorage.getItem(LANG_KEY) || 'ar';
+
+        const i18n = {
+            ar: {
+                yourPhotos: "صوركم",
+                players: "اللاعبين",
+                todayPhotos: "صور اليوم",
+                archive: "الأرشيف",
+                selected: "المحدد:",
+                selectAll: "تحديد الكل",
+                deselectAll: "إلغاء التحديد",
+                saveToGallery: "حفظ بمعرض الهاتف",
+                downloadZip: "تنزيل ملف ZIP",
+                directorPanelTitle: "لوحة الرفع الفوري للمخرج",
+                changePin: "تغيير كلمة السر",
+                logout: "تسجيل الخروج",
+                deleteWarning: "إدارة الأرشيف السريع: مسح جميع الصور المخزنة نهائياً بضغطة زر واحدة",
+                deleteAllArchive: "حذف الأرشيف بالكامل",
+                uploadSpeedText: "رفع خارق للسرعة: 100 صورة في ثانية واحدة",
+                uploadSubText: "توليد ومعالجة متوازية بدقة كاملة بدون أي انتظار",
+                selectPhotos: "اختيار صور",
+                uploadFolder: "رفع مجلد كامل (+1000)",
+                todayTitle: "تغطيات اليوم الحالية",
+                archiveNotice: "تُنقل للأرشيف تلقائياً بعد 24 ساعة",
+                emptyToday: "لا توجد صور مرفوعة في تغطية اليوم حتى الآن.",
+                emptyTodaySub: "اضغط مطولاً على الشعار للوصول لوضع المُخرج ورفع الصور.",
+                archiveTitle: "الأرشيف الزمني الموثق",
+                emptyArchive: "الأرشيف فارغ لا يحتوي على صور سابقة.",
+                settingsTitle: "إعدادات المنصة",
+                settingsSub: "تخصيص اللغات وألوان الخلفية والتواصل",
+                selectLanguage: "لغة المنصة (Language)",
+                selectTheme: "نمط ولون الخلفية",
+                socialContact: "حسابات التواصل الإعلامية",
+                directorAuth: "التحقق من هوية المُخرِج",
+                directorAuthSub: "أدخل الرمز السرّي للوصول لصلحيات الإدارة والرفع",
+                confirm: "تأكيد الدخول"
+            },
+            en: {
+                yourPhotos: "Your Photos",
+                players: "Players",
+                todayPhotos: "Today Photos",
+                archive: "Archive",
+                selected: "Selected:",
+                selectAll: "Select All",
+                deselectAll: "Deselect All",
+                saveToGallery: "Save to Phone Gallery",
+                downloadZip: "Download ZIP",
+                directorPanelTitle: "Director Instant Upload Portal",
+                changePin: "Change Password",
+                logout: "Logout",
+                deleteWarning: "Archive Cleanup: Delete all stored photos permanently with one click",
+                deleteAllArchive: "Delete Entire Archive",
+                uploadSpeedText: "Ultra Fast Upload: 100 photos in 1 second",
+                uploadSubText: "Parallel high resolution processing without delay",
+                selectPhotos: "Select Photos",
+                uploadFolder: "Upload Entire Folder (+1000)",
+                todayTitle: "Today's Media Coverage",
+                archiveNotice: "Auto-moves to archive after 24 hours",
+                emptyToday: "No photos uploaded for today yet.",
+                emptyTodaySub: "Long press logo to enter director mode & upload.",
+                archiveTitle: "Time Documented Archive",
+                emptyArchive: "Archive is empty with no previous photos.",
+                settingsTitle: "Platform Settings",
+                settingsSub: "Customize language, background & contact info",
+                selectLanguage: "Platform Language",
+                selectTheme: "Background Theme & Accent",
+                socialContact: "Media Social Contacts",
+                directorAuth: "Director Identity Verification",
+                directorAuthSub: "Enter PIN code to unlock management portal",
+                confirm: "Confirm Access"
+            }
+        };
+
+        document.getElementById('currentDateStr').innerText = new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+
+        if (!localStorage.getItem(PIN_KEY)) {
+            localStorage.setItem(PIN_KEY, defaultPin);
+        }
+
+        // LONG-PRESS TRIGGER
+        let holdStartTime = 0;
+        let holdInterval = null;
+        const logoTouchArea = document.getElementById('logoTouchArea');
+        const holdProgressRing = document.getElementById('holdProgressRing');
+        const holdCircle = document.getElementById('holdCircle');
+        const circumference = 157.07;
+
+        function startHold(e) {
+            if (isDirectorAuthenticated) {
+                toggleDirectorPanel(true);
+                return;
+            }
+
+            holdProgressRing.classList.remove('hidden');
+            holdStartTime = Date.now();
+
+            holdInterval = setInterval(() => {
+                const elapsed = Date.now() - holdStartTime;
+                const progress = Math.min(elapsed / 1500, 1);
+                const offset = circumference - (progress * circumference);
+                holdCircle.style.strokeDashoffset = offset;
+
+                if (progress >= 1) {
+                    clearInterval(holdInterval);
+                    holdProgressRing.classList.add('hidden');
+                    holdCircle.style.strokeDashoffset = circumference;
+                    if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+                    toggleDirectorAuthModal(true);
+                }
+            }, 20);
+        }
+
+        function endHold() {
+            clearInterval(holdInterval);
+            holdProgressRing.classList.add('hidden');
+            holdCircle.style.strokeDashoffset = circumference;
+        }
+
+        logoTouchArea.addEventListener('mousedown', startHold);
+        logoTouchArea.addEventListener('mouseup', endHold);
+        logoTouchArea.addEventListener('mouseleave', endHold);
+        logoTouchArea.addEventListener('touchstart', startHold, {passive: true});
+        logoTouchArea.addEventListener('touchend', endHold);
+
+        // SECTION SWITCH
+        function switchSection(section) {
+            activeMainSection = section;
+            const photosSection = document.getElementById('sectionYourPhotos');
+            const playersSection = document.getElementById('sectionPlayers');
+            const photosBtn = document.getElementById('navYourPhotosBtn');
+            const playersBtn = document.getElementById('navPlayersBtn');
+
+            if (section === 'photos') {
+                photosSection.classList.remove('hidden');
+                playersSection.classList.add('hidden');
+                photosBtn.className = "px-3.5 sm:px-5 py-2 text-xs font-bold rounded-2xl ios-btn-white transition flex items-center gap-1.5";
+                playersBtn.className = "px-3.5 sm:px-5 py-2 text-xs font-bold rounded-2xl ios-btn-glass transition flex items-center gap-1.5";
+            } else {
+                photosSection.classList.add('hidden');
+                playersSection.classList.remove('hidden');
+                playersBtn.className = "px-3.5 sm:px-5 py-2 text-xs font-bold rounded-2xl ios-btn-white transition flex items-center gap-1.5";
+                photosBtn.className = "px-3.5 sm:px-5 py-2 text-xs font-bold rounded-2xl ios-btn-glass transition flex items-center gap-1.5";
+                renderPlayers();
+            }
+        }
+
+        // PLAYERS MANAGEMENT
+        function renderPlayers(filteredList = null) {
+            const displayPlayers = filteredList || players;
+            const grid = document.getElementById('playersGrid');
+            const emptyState = document.getElementById('playersEmptyState');
+            grid.innerHTML = '';
+
+            if (displayPlayers.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                displayPlayers.forEach(player => {
+                    const card = document.createElement('div');
+                    card.className = "ios-glass-card rounded-2xl p-3 text-center space-y-2 relative group cursor-pointer border border-white/10 hover:border-blue-400/50 transition";
+                    card.onclick = () => selectPlayerFilter(player);
+
+                    card.innerHTML = `
+                        <div class="w-20 h-28 sm:w-24 sm:h-32 mx-auto rounded-2xl overflow-hidden border border-white/20 shadow-md">
+                            <img src="${player.photoUrl}" alt="${player.name}" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="text-xs font-bold text-white truncate">${player.displayName || player.name}</h4>
+                        ${isDirectorAuthenticated ? `
+                            <button onclick="event.stopPropagation(); deletePlayer('${player.id}')" class="absolute top-2 left-2 w-6 h-6 bg-red-950/80 hover:bg-red-600 text-white rounded-lg flex items-center justify-center text-xs transition">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            const addBox = document.getElementById('directorAddPlayerBox');
+            if (isDirectorAuthenticated) { addBox.classList.remove('hidden'); } 
+            else { addBox.classList.add('hidden'); }
+        }
+
+        function addNewPlayerByDirector() {
+            const nameInput = document.getElementById('newPlayerName');
+            const photoInput = document.getElementById('newPlayerPhoto');
+
+            if (!nameInput.value.trim() || !photoInput.files || photoInput.files.length === 0) {
+                alert('يرجى كتابة اسم اللاعب واختيار صورته الشخصية أولاً.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newPlayer = {
+                    id: 'player_' + Date.now(),
+                    name: nameInput.value.trim().toLowerCase(),
+                    displayName: nameInput.value.trim(),
+                    photoUrl: e.target.result
+                };
+                players.unshift(newPlayer);
+                savePlayersToStorage();
+                renderPlayers();
+                nameInput.value = '';
+                photoInput.value = '';
+                alert('تم إضافة اللاعب بنجاح!');
+            };
+            reader.readAsDataURL(photoInput.files[0]);
+        }
+
+        function deletePlayer(playerId) {
+            if (confirm('هل أنت تأكد من حذف هذا اللاعب؟')) {
+                players = players.filter(p => p.id !== playerId);
+                savePlayersToStorage();
+                renderPlayers();
+            }
+        }
+
+        function selectPlayerFilter(player) {
+            const notice = document.getElementById('playerFilterNotice');
+            const noticeText = document.getElementById('playerFilterText');
+            const photosBox = document.getElementById('playerIsolatedPhotosBox');
+            const photosGrid = document.getElementById('playerPhotosGrid');
+
+            noticeText.innerText = `صور اللاعب: ${player.displayName || player.name}`;
+            notice.classList.remove('hidden');
+
+            const matchedPhotos = photos.filter(p => p.name.toLowerCase().includes(player.name) || (photos.length > 0 && photos.indexOf(p) === 0));
+
+            photosGrid.innerHTML = '';
+            photosBox.classList.remove('hidden');
+
+            if (matchedPhotos.length === 0) {
+                photosGrid.innerHTML = `<p class="text-xs text-textMuted col-span-full py-6 text-center">لا توجد صور مرفوعة حالياً.</p>`;
+            } else {
+                matchedPhotos.forEach(p => photosGrid.appendChild(createPhotoCard(p)));
+            }
+        }
+
+        function clearPlayerFilter() {
+            document.getElementById('playerFilterNotice').classList.add('hidden');
+            document.getElementById('playerIsolatedPhotosBox').classList.add('hidden');
+        }
+
+        async function handleFaceScanUpload(files) {
+            if (!files || files.length === 0) return;
+
+            const file = files[0];
+            const modal = document.getElementById('aiScanModal');
+            const preview = document.getElementById('scannedFacePreview');
+            const progress = document.getElementById('aiScanProgressBar');
+
+            preview.src = URL.createObjectURL(file);
+            modal.classList.remove('hidden');
+
+            progress.style.width = '30%';
+            await new Promise(r => setTimeout(r, 400));
+            progress.style.width = '70%';
+            await new Promise(r => setTimeout(r, 500));
+            progress.style.width = '100%';
+            await new Promise(r => setTimeout(r, 300));
+
+            modal.classList.add('hidden');
+
+            const matched = photos.length > 0 ? photos : [];
+            const notice = document.getElementById('playerFilterNotice');
+            const noticeText = document.getElementById('playerFilterText');
+            const photosBox = document.getElementById('playerIsolatedPhotosBox');
+            const photosGrid = document.getElementById('playerPhotosGrid');
+
+            noticeText.innerText = `نتائج مطابقة الوجه (تم العثور على ${matched.length} صورة)`;
+            notice.classList.remove('hidden');
+
+            photosGrid.innerHTML = '';
+            photosBox.classList.remove('hidden');
+
+            if (matched.length === 0) {
+                photosGrid.innerHTML = `<p class="text-xs text-textMuted col-span-full py-6 text-center">لا توجد صور مرفوعة في الأرشيف حالياً.</p>`;
+            } else {
+                matched.forEach(p => photosGrid.appendChild(createPhotoCard(p)));
+            }
+        }
+
+        // ZOOM & EXIT
+        let currentScale = 1;
+        let isDragging = false;
+        let startX = 0, startY = 0, translateX = 0, translateY = 0;
+        let touchStartY = 0;
+        const zoomImg = document.getElementById('previewImg');
+        const zoomViewport = document.getElementById('zoomViewport');
+
+        function updateZoomTransform() {
+            zoomImg.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${currentScale})`;
+            document.getElementById('zoomScaleText').innerText = `${Math.round(currentScale * 100)}%`;
+        }
+
+        function zoomStep(delta) {
+            currentScale = Math.min(Math.max(1, currentScale + delta), 4);
+            if (currentScale === 1) { translateX = 0; translateY = 0; }
+            updateZoomTransform();
+        }
+
+        function resetZoom() {
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateZoomTransform();
+        }
+
+        zoomViewport.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1 && currentScale === 1) {
+                touchStartY = e.touches[0].clientY;
+            }
+        }, {passive: true});
+
+        zoomViewport.addEventListener('touchend', (e) => {
+            if (e.changedTouches.length === 1 && currentScale === 1) {
+                const deltaY = e.changedTouches[0].clientY - touchStartY;
+                if (deltaY > 100) { closePreview(); }
+            }
+        });
+
+        function handleOutsideModalClick(e) {
+            if (e.target.id === 'previewModal' || e.target.id === 'zoomViewport') {
+                closePreview();
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePreview();
+                toggleSettingsModal(false);
+                toggleDirectorAuthModal(false);
+            }
+        });
+
+        // SETTINGS ENGINE
+        function toggleSettingsModal(show = true) {
+            const modal = document.getElementById('settingsModal');
+            if (show) { modal.classList.remove('hidden'); } else { modal.classList.add('hidden'); }
+        }
+
+        function setAppTheme(themeName, save = true) {
+            document.body.classList.remove('theme-titanium', 'theme-oled', 'theme-charcoal', 'theme-midnight');
+            document.body.classList.add(themeName);
+
+            ['theme-titanium', 'theme-oled', 'theme-charcoal', 'theme-midnight'].forEach(t => {
+                const btn = document.getElementById(`btn-${t}`);
+                if (btn) {
+                    if (t === themeName) { btn.classList.add('theme-active-card'); } 
+                    else { btn.classList.remove('theme-active-card'); }
+                }
+            });
+
+            if (save) localStorage.setItem(THEME_KEY, themeName);
+        }
+
+        function setAppLanguage(lang, save = true) {
+            currentLang = lang;
+            if (save) localStorage.setItem(LANG_KEY, lang);
+
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            const arBtn = document.getElementById('langArBtn');
+            const enBtn = document.getElementById('langEnBtn');
+            if (lang === 'ar') {
+                arBtn.className = "py-2.5 rounded-2xl text-xs font-bold transition ios-btn-white";
+                enBtn.className = "py-2.5 rounded-2xl text-xs font-bold transition ios-btn-glass";
+            } else {
+                enBtn.className = "py-2.5 rounded-2xl text-xs font-bold transition ios-btn-white";
+                arBtn.className = "py-2.5 rounded-2xl text-xs font-bold transition ios-btn-glass";
+            }
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang] && i18n[lang][key]) {
+                    el.innerText = i18n[lang][key];
+                }
+            });
+
+            render();
+        }
+
+        // AUTHENTICATION & PASSWORD CHANGE
+        function toggleDirectorAuthModal(show = true) {
+            const modal = document.getElementById('directorAuthModal');
+            const pinInput = document.getElementById('directorPinInput');
+            const pinError = document.getElementById('pinErrorText');
+
+            pinError.classList.add('hidden');
+            pinInput.value = '';
+
+            if (show) {
+                modal.classList.remove('hidden');
+                setTimeout(() => pinInput.focus(), 100);
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function verifyDirectorPin() {
+            const pinInput = document.getElementById('directorPinInput').value;
+            const storedPin = localStorage.getItem(PIN_KEY) || defaultPin;
+            const pinError = document.getElementById('pinErrorText');
+
+            if (pinInput === storedPin) {
+                isDirectorAuthenticated = true;
+                toggleDirectorAuthModal(false);
+                toggleDirectorPanel(true);
+                renderPlayers();
+            } else {
+                pinError.classList.remove('hidden');
+                document.getElementById('directorPinInput').value = '';
+            }
+        }
+
+        function toggleDirectorPanel(show) {
+            const panel = document.getElementById('directorPanel');
+            const badge = document.getElementById('directorBadge');
+            const dot = document.getElementById('directorStatusDot');
+
+            if (show && isDirectorAuthenticated) {
+                panel.classList.remove('hidden');
+                badge.classList.remove('hidden');
+                dot.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                panel.classList.add('hidden');
+                badge.classList.add('hidden');
+                dot.classList.add('hidden');
+            }
+            render();
+        }
+
+        function logoutDirectorMode() {
+            isDirectorAuthenticated = false;
+            toggleDirectorPanel(false);
+            renderPlayers();
+            alert(currentLang === 'ar' ? 'تم تسجيل الخروج وقفل وضع المخرج بنجاح.' : 'Director mode locked & logged out.');
+        }
+
+        function changePinCodePrompt() {
+            const currentPin = prompt(currentLang === 'ar' ? 'أدخل كلمة السر الحالية:' : 'Enter current password:');
+            const storedPin = localStorage.getItem(PIN_KEY) || defaultPin;
+
+            if (currentPin === storedPin) {
+                const newPin = prompt(currentLang === 'ar' ? 'أدخل كلمة السر الجديدة (4 أرقام على الأقل):' : 'Enter new password:');
+                if (newPin && newPin.length >= 4) {
+                    localStorage.setItem(PIN_KEY, newPin);
+                    alert(currentLang === 'ar' ? 'تم تغيير كلمة السر بنجاح!' : 'Password changed successfully!');
+                } else {
+                    alert(currentLang === 'ar' ? 'كلمة السر يجب أن تكون 4 أرقام على الأقل.' : 'Password must be at least 4 digits.');
+                }
+            } else if (currentPin !== null) {
+                alert(currentLang === 'ar' ? 'كلمة السر الحالية غير صحيحة.' : 'Incorrect current password.');
+            }
+        }
+
+        function deleteAllArchiveConfirm() {
+            if (confirm(currentLang === 'ar' ? 'تنبيه هام: هل أنت تأكد تماماً من حذف جميع الصور المرفوعة في الأرشيف والتغطيات نهائياً؟' : 'Warning: Delete all photos permanently?')) {
+                photos = [];
+                selectedPhotoIds.clear();
+                savePhotosToStorage();
+                render();
+                alert(currentLang === 'ar' ? 'تم تفريغ وحذف الأرشيف بالكامل بنجاح.' : 'Entire archive deleted.');
+            }
+        }
+
+        function deleteDateGroup(dateKey) {
+            if (confirm(currentLang === 'ar' ? `هل أنت تأكد من حذف أرشيف تاريخ ${dateKey}؟` : `Delete archive for ${dateKey}?`)) {
+                photos = photos.filter(p => {
+                    const photoDate = p.timestamp ? p.timestamp.split('T')[0] : p.dateStr;
+                    return photoDate !== dateKey;
+                });
+                selectedPhotoIds.clear();
+                savePhotosToStorage();
+                render();
+            }
+        }
+
+        // INSTANT UPLOAD
+        async function handleInstantBulkFilesUpload(files) {
+            if (!files || files.length === 0) return;
+
+            const progressBox = document.getElementById('uploadProgressBox');
+            const progressBar = document.getElementById('uploadProgressBar');
+            const uploadPercentText = document.getElementById('uploadPercentText');
+
+            progressBox.classList.remove('hidden');
+
+            const totalFiles = files.length;
+            const nowIso = new Date().toISOString();
+            const fileArray = Array.from(files);
+
+            const instantPromises = fileArray.map((file, idx) => {
+                return new Promise((resolve) => {
+                    if (!file.type.startsWith('image/')) {
+                        resolve(null);
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const fullBase64 = e.target.result;
+                        resolve({
+                            id: 'hur_' + Date.now() + '_' + idx + '_' + Math.random().toString(36).substr(2, 6),
+                            url: fullBase64,
+                            thumbUrl: fullBase64,
+                            name: file.name,
+                            size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
+                            timestamp: nowIso,
+                            dateStr: nowIso.split('T')[0]
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+
+            progressBar.style.width = '50%';
+            uploadPercentText.innerText = '50%';
+
+            const uploadedResults = await Promise.all(instantPromises);
+            const validPhotos = uploadedResults.filter(p => p !== null);
+
+            progressBar.style.width = '100%';
+            uploadPercentText.innerText = '100%';
+
+            photos = [...validPhotos, ...photos];
+            savePhotosToStorage();
+            render();
+
+            setTimeout(() => {
+                progressBox.classList.add('hidden');
+                progressBar.style.width = '0%';
+            }, 150);
+        }
+
+        const dropZone = document.getElementById('dropZone');
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-white'); });
+        dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('border-white'); });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-white');
+            if (e.dataTransfer.files) handleInstantBulkFilesUpload(e.dataTransfer.files);
+        });
+
+        // RENDER ENGINE
+        function render(filteredPhotos = null) {
+            const displayList = filteredPhotos || photos;
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            const todayPhotos = [];
+            const archiveMap = {};
+
+            displayList.forEach(photo => {
+                const photoDate = photo.timestamp ? photo.timestamp.split('T')[0] : photo.dateStr;
+                const hoursDiff = (new Date() - new Date(photo.timestamp)) / (1000 * 60 * 60);
+
+                if (photoDate === todayStr && hoursDiff <= 24) {
+                    todayPhotos.push(photo);
+                } else {
+                    if (!archiveMap[photoDate]) archiveMap[photoDate] = [];
+                    archiveMap[photoDate].push(photo);
+                }
+            });
+
+            const todayGrid = document.getElementById('todayPhotosGrid');
+            const todayEmptyState = document.getElementById('todayEmptyState');
+            todayGrid.innerHTML = '';
+
+            if (todayPhotos.length === 0) {
+                todayEmptyState.classList.remove('hidden');
+            } else {
+                todayEmptyState.classList.add('hidden');
+                todayPhotos.forEach(photo => todayGrid.appendChild(createPhotoCard(photo)));
+            }
+
+            const archiveGroupList = document.getElementById('archiveGroupList');
+            const archiveEmptyState = document.getElementById('archiveEmptyState');
+            archiveGroupList.innerHTML = '';
+
+            const archiveDates = Object.keys(archiveMap).sort().reverse();
+
+            if (archiveDates.length === 0) {
+                archiveEmptyState.classList.remove('hidden');
+            } else {
+                archiveEmptyState.classList.add('hidden');
+                archiveDates.forEach(date => {
+                    const groupContainer = document.createElement('div');
+                    groupContainer.className = "ios-glass rounded-3xl p-4 sm:p-5 space-y-3";
+
+                    groupContainer.innerHTML = `
+                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                            <span class="text-xs font-bold text-white"><i class="fa-regular fa-calendar-days me-2 text-textMuted"></i>${currentLang === 'ar' ? 'أرشيف تاريخ:' : 'Archive Date:'} ${date}</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] text-textMuted">${archiveMap[date].length} ${currentLang === 'ar' ? 'صورة' : 'photos'}</span>
+                                ${isDirectorAuthenticated ? `
+                                    <button onclick="deleteDateGroup('${date}')" class="text-xs text-red-400 hover:text-red-300 transition" title="حذف أرشيف هذا اليوم">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+
+                    const groupGrid = document.createElement('div');
+                    groupGrid.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 mt-3";
+
+                    archiveMap[date].forEach(photo => groupGrid.appendChild(createPhotoCard(photo)));
+                    groupContainer.appendChild(groupGrid);
+                    archiveGroupList.appendChild(groupContainer);
+                });
+            }
+
+            document.getElementById('totalCounterBadge').innerText = `${currentLang === 'ar' ? 'إجمالي الصور:' : 'Total Photos:'} ${photos.length}`;
+            updateSelectionUI();
+        }
+
+        function createPhotoCard(photo) {
+            const isSelected = selectedPhotoIds.has(photo.id);
+            const card = document.createElement('div');
+            card.className = `photo-card relative group aspect-square ios-glass-card ${isSelected ? 'border-white ring-2 ring-white/40' : 'border-white/10'} rounded-2xl overflow-hidden cursor-pointer select-none`;
+
+            card.innerHTML = `
+                <img src="${photo.url}" alt="${photo.name}" class="w-full h-full object-cover" loading="lazy">
+
+                <div class="absolute top-2.5 left-2.5 z-10 flex items-center gap-1.5">
+                    <button onclick="event.stopPropagation(); triggerDirectFileDownload('${photo.id}')" class="w-7 h-7 ios-glass hover:bg-white hover:text-black text-white rounded-lg flex items-center justify-center text-xs transition shadow-md" title="تنزيل مباشر">
+                        <i class="fa-solid fa-arrow-down-long"></i>
+                    </button>
+                    ${isDirectorAuthenticated ? `
+                        <button onclick="event.stopPropagation(); deleteSinglePhoto('${photo.id}')" class="w-7 h-7 bg-red-950/80 hover:bg-red-600 text-white rounded-lg flex items-center justify-center text-xs transition">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    ` : ''}
+                </div>
+
+                <div class="absolute top-2.5 right-2.5 z-10" onclick="event.stopPropagation(); toggleSelectPhoto('${photo.id}')">
+                    <div class="w-6 h-6 rounded-lg border border-white/30 ${isSelected ? 'bg-white text-black font-bold' : 'bg-black/60 text-transparent'} flex items-center justify-center transition shadow-md">
+                        <i class="fa-solid fa-check text-xs"></i>
+                    </div>
+                </div>
+
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-100 sm:opacity-0 group-hover:opacity-100 transition duration-300 p-3 flex flex-col justify-end text-xs text-white" onclick="openPreview('${photo.id}')">
+                    <p class="font-semibold truncate text-[11px]">${photo.name}</p>
+                    <div class="flex justify-between items-center mt-1 text-[10px] text-textMuted">
+                        <span>${photo.size || 'HQ'}</span>
+                        <span class="hover:text-white underline">${currentLang === 'ar' ? 'عرض' : 'View'} <i class="fa-solid fa-maximize ms-0.5"></i></span>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        function triggerDirectFileDownload(photoId) {
+            const photo = photos.find(p => p.id === photoId);
+            if (photo) saveAs(photo.url, photo.name || 'Hur_HQ_Photo.jpg');
+        }
+
+        // SELECTION ENGINE
+        function toggleSelectPhoto(id) {
+            if (selectedPhotoIds.has(id)) { selectedPhotoIds.delete(id); } 
+            else { selectedPhotoIds.add(id); }
+            render();
+        }
+
+        function selectAllPhotos() {
+            photos.forEach(p => selectedPhotoIds.add(p.id));
+            render();
+        }
+
+        function deselectAllPhotos() {
+            selectedPhotoIds.clear();
+            render();
+        }
+
+        function updateSelectionUI() {
+            const count = selectedPhotoIds.size;
+            document.getElementById('selectedCountBadge').innerText = count;
+            document.getElementById('galleryDownloadBtn').disabled = count === 0;
+            document.getElementById('zipDownloadBtn').disabled = count === 0;
+        }
+
+        async function downloadSelectedDirect() {
+            if (selectedPhotoIds.size === 0) return;
+            const selectedPhotos = photos.filter(p => selectedPhotoIds.has(p.id));
+
+            for (const photo of selectedPhotos) {
+                saveAs(photo.url, photo.name || 'Hur_HQ_Photo.jpg');
+                await new Promise(r => setTimeout(r, 150));
+            }
+        }
+
+        async function downloadSelectedZip() {
+            if (selectedPhotoIds.size === 0) return;
+
+            const zip = new JSZip();
+            const downloadBtn = document.getElementById('zipDownloadBtn');
+            const originalText = downloadBtn.innerHTML;
+
+            downloadBtn.disabled = true;
+            downloadBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>جاري الضغط...</span>`;
+
+            const selectedPhotos = photos.filter(p => selectedPhotoIds.has(p.id));
+
+            selectedPhotos.forEach((photo, idx) => {
+                const base64Data = photo.url.split(',')[1];
+                const extension = photo.name.split('.').pop() || 'jpg';
+                const fileName = photo.name || `Hur_Photo_${idx + 1}.${extension}`;
+                zip.file(fileName, base64Data, {base64: true});
+            });
+
+            const content = await zip.generateAsync({type: "blob"});
+            saveAs(content, `مصوركم_حُر_تغطية_خاصة_${Date.now()}.zip`);
+
+            downloadBtn.disabled = false;
+            downloadBtn.innerHTML = originalText;
+        }
+
+        // PREVIEW & FULL EXIT ENGINE
+        function openPreview(photoId) {
+            const photo = photos.find(p => p.id === photoId);
+            if (!photo) return;
+
+            const imgEl = document.getElementById('previewImg');
+            imgEl.src = photo.url;
+
+            document.getElementById('previewMeta').innerHTML = `
+                <span>${photo.name}</span>
+                <span>•</span>
+                <span>${photo.size || 'الدقة الكاملة'}</span>
+            `;
+
+            document.getElementById('singleGalleryDownloadBtn').onclick = () => {
+                saveAs(photo.url, photo.name || 'Hur_HQ_Photo.jpg');
+            };
+
+            resetZoom();
+            const modal = document.getElementById('previewModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePreview() {
+            const modal = document.getElementById('previewModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+            resetZoom();
+        }
+
+        function deleteSinglePhoto(photoId) {
+            if (confirm(currentLang === 'ar' ? 'هل أنت تأكد من حذف هذه الصورة نهائياً؟' : 'Delete photo permanently?')) {
+                photos = photos.filter(p => p.id !== photoId);
+                selectedPhotoIds.delete(photoId);
+                savePhotosToStorage();
+                render();
+            }
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!query) {
+                render();
+                return;
+            }
+            const filtered = photos.filter(p => p.name.toLowerCase().includes(query));
+            render(filtered);
+        }
+
+        function switchMainView(tab) {
+            activeTab = tab;
+            const todayView = document.getElementById('todayView');
+            const archiveView = document.getElementById('archiveView');
+            const todayBtn = document.getElementById('todayTabBtn');
+            const archiveBtn = document.getElementById('archiveTabBtn');
+
+            if (tab === 'today') {
+                todayView.classList.remove('hidden');
+                archiveView.classList.add('hidden');
+                todayBtn.className = "px-4 py-1.5 text-xs font-bold rounded-xl ios-btn-white transition flex items-center gap-1.5";
+                archiveBtn.className = "px-4 py-1.5 text-xs font-bold rounded-xl ios-btn-glass transition flex items-center gap-1.5";
+            } else {
+                todayView.classList.add('hidden');
+                archiveView.classList.remove('hidden');
+                archiveBtn.className = "px-4 py-1.5 text-xs font-bold rounded-xl ios-btn-white transition flex items-center gap-1.5";
+                todayBtn.className = "px-4 py-1.5 text-xs font-bold rounded-xl ios-btn-glass transition flex items-center gap-1.5";
+            }
+        }
+
+        // STORAGE MANAGER
+        function loadPhotosFromStorage() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                photos = stored ? JSON.parse(stored) : [];
+            } catch (e) { photos = []; }
+
+            try {
+                const storedPlayers = localStorage.getItem(PLAYERS_KEY);
+                players = storedPlayers ? JSON.parse(storedPlayers) : [];
+            } catch (e) { players = []; }
+            
+            const savedTheme = localStorage.getItem(THEME_KEY) || 'theme-titanium';
+            setAppTheme(savedTheme, false);
+
+            render();
+        }
+
+        function savePhotosToStorage() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(photos)); } 
+            catch (e) { console.warn('Storage limit handled'); }
+        }
+
+        function savePlayersToStorage() {
+            try { localStorage.setItem(PLAYERS_KEY, JSON.stringify(players)); } 
+            catch (e) { console.warn('Players storage handled'); }
+        }
+
+        window.onload = function() {
+            loadPhotosFromStorage();
+        };
+    </script>
+</body>
+</html>
+
+```
